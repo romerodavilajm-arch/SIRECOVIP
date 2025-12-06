@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏙️ SIRECOVIP - Sistema de Registro de Comerciantes en Vía Pública
 
 Plataforma integral para el censo, geolocalización y administración de comerciantes en el Municipio de Querétaro.
@@ -111,3 +112,6 @@ sirecovip/
 1.  Siempre corre `docker compose down` al terminar tu sesión para liberar recursos.
 2.  No hagas commit de archivos `.env`.
 3.  Si instalas una nueva librería (`npm install`), debes reconstruir el contenedor con `--build`.
+=======
+a
+>>>>>>> 92a88b994a66193e8234685fa0e319f81769bee0
