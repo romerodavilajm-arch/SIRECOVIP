@@ -1,0 +1,24 @@
+# Dependencias y Logs
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Variables de Entorno (¡CRÍTICO: NO SUBIR!)
+.env
+.env.local
+
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de Build
+dist
+build
+
+# Archivos de Docker locales
+.docker
+
+# Archivos de IA y Editor
+.claude
+.vscode
+.idea
