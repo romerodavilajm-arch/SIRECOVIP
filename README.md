@@ -67,7 +67,7 @@ El cerebro del sistema debe iniciar primero para que el Frontend pueda conectars
     ```bash
     docker compose up -d --build
     ```
-3.  **Verificación:** Visita [http://localhost:3000/](https://www.google.com/search?q=http://localhost:3000/). Debería decir: `API SIRECOVIP Online`.
+3.  **Verificación:** Visita [http://localhost:3000/](http://localhost:3000/). Debería decir: `API SIRECOVIP Online`.
 
 -----
 
@@ -78,7 +78,7 @@ El cerebro del sistema debe iniciar primero para que el Frontend pueda conectars
     ```bash
     docker compose up --build
     ```
-3.  El sistema estará disponible en: **[http://localhost:5173](https://www.google.com/search?q=http://localhost:5173)**
+3.  El sistema estará disponible en: **[http://localhost:5173](http://localhost:5173)**
 
 -----
 
