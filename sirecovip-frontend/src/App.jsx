@@ -13,8 +13,12 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           <Route path="/app" element={<ProtectedLayout />}>
-            <Route path="map" element={<MapView />} />
+            {/* Ruta por defecto: redirigir a dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
+
+            {/* Rutas accesibles para ambos roles */}
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="map" element={<MapView />} />
           </Route>
 
           <Route path="/" element={<Navigate to="/login" replace />} />

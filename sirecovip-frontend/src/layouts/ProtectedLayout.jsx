@@ -2,13 +2,13 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const ProtectedLayout = () => {
-  const { isAuthenticated, loading, role } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           <p className="mt-4 text-gray-600">Cargando...</p>
         </div>
       </div>
@@ -19,14 +19,7 @@ const ProtectedLayout = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (role === 'inspector') {
-    return <Navigate to="/app/map" replace />;
-  }
-
-  if (role === 'coordinator') {
-    return <Navigate to="/app/dashboard" replace />;
-  }
-
+  // Sin redirecciones basadas en rol - el usuario decide a dónde ir
   return (
     <div className="min-h-screen bg-gray-50">
       <Outlet />
