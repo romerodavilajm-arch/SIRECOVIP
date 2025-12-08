@@ -5,6 +5,7 @@ import Login from './pages/auth/Login';
 import MapView from './pages/inspector/MapView';
 import Dashboard from './pages/coordinator/Dashboard';
 import MerchantDetail from './pages/inspector/MerchantDetail';
+import MerchantList from './pages/inspector/MerchantList';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="map" element={<MapView />} />
 
             {/* Rutas de comerciantes */}
+            <Route path="merchants" element={<MerchantList />} />
             <Route path="merchants/new" element={<MerchantDetail />} />
             <Route path="merchants/:id" element={<MerchantDetail />} />
           </Route>

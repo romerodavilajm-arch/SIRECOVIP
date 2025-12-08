@@ -7,6 +7,7 @@ const Badge = ({ children, variant = 'default', size = 'md', className = '', ...
     // Variantes de estatus SIRECOVIP
     'sin-foco': 'bg-gray-100 text-gray-700 border border-gray-300',
     'en-observacion': 'bg-amber-100 text-amber-800 border border-amber-300',
+    'prioritario': 'bg-red-100 text-red-800 border border-red-300',
     'en-revision': 'bg-blue-100 text-blue-800 border border-blue-300',
     'aprobado': 'bg-green-100 text-green-800 border border-green-300',
     'rechazado': 'bg-red-100 text-red-800 border border-red-300',

@@ -104,6 +104,26 @@ const createMerchant = async (req, res) => {
 
     if (error) throw error;
 
+    const merchantId = data[0].id;
+
+    // 3. Guardar documentos en la tabla documents si existen
+    if (documentUrls.length > 0) {
+      const documentsToInsert = documentUrls.map(url => ({
+        merchant_id: merchantId,
+        document_type: 'general',
+        file_url: url,
+        uploaded_by: userId
+      }));
+
+      const { error: docsError } = await supabase
+        .from('documents')
+        .insert(documentsToInsert);
+
+      if (docsError) {
+        console.error('Error guardando documentos:', docsError);
+      }
+    }
+
     res.status(201).json({
       message: '✅ Comerciante registrado correctamente',
       merchant: data[0]
@@ -142,7 +162,8 @@ const getMerchantById = async (req, res) => {
       .from('merchants')
       .select(`
         *,
-        organizations (name)
+        organizations (name),
+        documents (*)
       `)
       .eq('id', id)
       .single();
@@ -266,6 +287,25 @@ const updateMerchant = async (req, res) => {
 
     if (!data || data.length === 0) {
       return res.status(404).json({ error: 'Comerciante no encontrado' });
+    }
+
+    // Guardar nuevos documentos en la tabla documents si existen
+    if (documentUrls.length > 0) {
+      const userId = req.user.id;
+      const documentsToInsert = documentUrls.map(url => ({
+        merchant_id: id,
+        document_type: 'general',
+        file_url: url,
+        uploaded_by: userId
+      }));
+
+      const { error: docsError } = await supabase
+        .from('documents')
+        .insert(documentsToInsert);
+
+      if (docsError) {
+        console.error('Error guardando nuevos documentos:', docsError);
+      }
     }
 
     res.json({

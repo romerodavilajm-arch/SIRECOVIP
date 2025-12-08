@@ -28,18 +28,18 @@ const SidebarLayout = ({ children }) => {
   // Definir menú según rol
   const menuItems = {
     inspector: [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-      { icon: Map, label: 'Mapa', path: '/mapa' },
-      { icon: Store, label: 'Comerciantes', path: '/comerciantes' },
-      { icon: FileText, label: 'Reportes', path: '/reportes' },
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/app/dashboard' },
+      { icon: Map, label: 'Mapa', path: '/app/map' },
+      { icon: Store, label: 'Comerciantes', path: '/app/merchants' },
+      { icon: FileText, label: 'Reportes', path: '/app/reportes' },
     ],
     coordinator: [
-      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-      { icon: Map, label: 'Mapa General', path: '/mapa' },
-      { icon: Users, label: 'Inspectores', path: '/inspectores' },
-      { icon: Store, label: 'Comerciantes', path: '/comerciantes' },
-      { icon: FileText, label: 'Reportes', path: '/reportes' },
-      { icon: Settings, label: 'Configuración', path: '/configuracion' },
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/app/dashboard' },
+      { icon: Map, label: 'Mapa General', path: '/app/map' },
+      { icon: Users, label: 'Inspectores', path: '/app/inspectores' },
+      { icon: Store, label: 'Comerciantes', path: '/app/merchants' },
+      { icon: FileText, label: 'Reportes', path: '/app/reportes' },
+      { icon: Settings, label: 'Configuración', path: '/app/configuracion' },
     ],
   };
 

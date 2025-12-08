@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Map, Plus, Filter, Search, MapPin, Store, Eye, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Card, Button, Input, Select, Badge } from '../../components/ui';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 
 const MapView = () => {
+  const navigate = useNavigate();
   const [filterStatus, setFilterStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -54,17 +56,11 @@ const MapView = () => {
         <div className="flex-1 flex flex-col">
           {/* Header con controles */}
           <div className="bg-white border-b border-gray-200 p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-h2 text-gray-900">Mapa de Comerciantes</h1>
-                <p className="text-body-sm text-gray-600 mt-1">
-                  Vista geográfica de comerciantes en tu zona
-                </p>
-              </div>
-              <Button variant="default" size="md" className="gap-2">
-                <Plus size={20} />
-                Agregar Comerciante
-              </Button>
+            <div>
+              <h1 className="text-h2 text-gray-900">Mapa de Comerciantes</h1>
+              <p className="text-body-sm text-gray-600 mt-1">
+                Vista geográfica de comerciantes en tu zona
+              </p>
             </div>
 
             {/* Filtros */}
@@ -129,6 +125,7 @@ const MapView = () => {
                 variant="default"
                 size="lg"
                 className="rounded-full shadow-xl hover:shadow-2xl gap-2"
+                onClick={() => navigate('/app/merchants/new')}
               >
                 <Plus size={24} />
                 <span className="hidden sm:inline">Nuevo Comerciante</span>
@@ -207,7 +204,12 @@ const MapView = () => {
 
           {/* Ver todos */}
           <div className="p-4 border-t border-gray-200">
-            <Button variant="outline" size="sm" className="w-full">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full"
+              onClick={() => navigate('/app/merchants')}
+            >
               Ver todos los comerciantes
             </Button>
           </div>
