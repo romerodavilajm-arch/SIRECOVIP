@@ -5,6 +5,7 @@ const authRoutes = require('./routes/authRoutes');
 
 // Importar rutas
 const merchantRoutes = require('./routes/merchantRoutes');
+const organizationRoutes = require('./routes/organizationRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,8 +26,9 @@ app.get('/', (req, res) => res.json({ status: 'API SIRECOVIP Online 🚀' }));
 // Rutas de autenticación
 app.use('/api/auth', authRoutes);
 
-// Rutas de la API (Aquí montamos el módulo de comerciantes)
+// Rutas de la API
 app.use('/api/merchants', merchantRoutes);
+app.use('/api/organizations', organizationRoutes);
 
 app.listen(port, () => {
     console.log(`\n🚀 Servidor corriendo en http://localhost:${port}`);

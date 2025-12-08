@@ -7,8 +7,15 @@ const upload = require('../middlewares/uploadMiddleware');
 
 // Definir endpoints
 // POST: Auth + Upload + Controller
-// 'image' es el nombre del campo que enviaremos en el formulario
-router.post('/', requireAuth, upload.single('image'), merchantController.createMerchant); // Crear
+// Aceptar múltiples archivos: 'image' (foto del puesto) y 'documents' (múltiples documentos)
+const uploadFields = upload.fields([
+  { name: 'image', maxCount: 1 },           // Foto del puesto
+  { name: 'documents', maxCount: 10 }       // Documentos adicionales (máx 10)
+]);
+
+router.post('/', requireAuth, uploadFields, merchantController.createMerchant); // Crear
 router.get('/', requireAuth, merchantController.getMerchants);    // Listar
+router.get('/:id', requireAuth, merchantController.getMerchantById); // Obtener por ID
+router.put('/:id', requireAuth, uploadFields, merchantController.updateMerchant); // Actualizar
 
 module.exports = router;

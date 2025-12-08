@@ -5,6 +5,20 @@ import axiosInstance from '../api/axios';
  */
 const merchantService = {
   /**
+   * Obtiene todas las organizaciones para el catálogo
+   * @returns {Promise} Lista de organizaciones
+   */
+  getOrganizations: async () => {
+    try {
+      const response = await axiosInstance.get('/organizations');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching organizations:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Obtiene todos los comerciantes
    * @returns {Promise} Lista de comerciantes
    */
@@ -34,13 +48,18 @@ const merchantService = {
   },
 
   /**
-   * Crea un nuevo comerciante
-   * @param {Object} merchantData - Datos del comerciante
+   * Crea un nuevo comerciante con soporte para FormData (archivos)
+   * @param {FormData|Object} merchantData - Datos del comerciante o FormData con archivos
    * @returns {Promise} Comerciante creado
    */
   createMerchant: async (merchantData) => {
     try {
-      const response = await axiosInstance.post('/merchants', merchantData);
+      // Si es FormData, axios automáticamente establece el Content-Type correcto
+      const config = merchantData instanceof FormData
+        ? { headers: { 'Content-Type': 'multipart/form-data' } }
+        : {};
+
+      const response = await axiosInstance.post('/merchants', merchantData, config);
       return response.data;
     } catch (error) {
       console.error('Error creating merchant:', error);
@@ -49,14 +68,19 @@ const merchantService = {
   },
 
   /**
-   * Actualiza un comerciante existente
+   * Actualiza un comerciante existente con soporte para FormData (archivos)
    * @param {string} id - ID del comerciante
-   * @param {Object} merchantData - Datos actualizados
+   * @param {FormData|Object} merchantData - Datos actualizados o FormData con archivos
    * @returns {Promise} Comerciante actualizado
    */
   updateMerchant: async (id, merchantData) => {
     try {
-      const response = await axiosInstance.put(`/merchants/${id}`, merchantData);
+      // Si es FormData, axios automáticamente establece el Content-Type correcto
+      const config = merchantData instanceof FormData
+        ? { headers: { 'Content-Type': 'multipart/form-data' } }
+        : {};
+
+      const response = await axiosInstance.put(`/merchants/${id}`, merchantData, config);
       return response.data;
     } catch (error) {
       console.error(`Error updating merchant ${id}:`, error);
