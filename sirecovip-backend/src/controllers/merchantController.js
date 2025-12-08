@@ -152,8 +152,16 @@ const getMerchants = async (req, res) => {
       .limit(20);
 
     if (error) throw error;
+
+    // Log para debugging
+    console.log(`📋 Listando ${data?.length || 0} comerciantes`);
+    if (data && data.length > 0) {
+      console.log('🔑 Primeros IDs:', data.slice(0, 3).map(m => m.id));
+    }
+
     res.json(data);
   } catch (error) {
+    console.error('❌ Error en getMerchants:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -162,6 +170,8 @@ const getMerchants = async (req, res) => {
 const getMerchantById = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(`🔍 Buscando comerciante con ID: ${id}`);
+
     const { data, error } = await supabase
       .from('merchants')
       .select(`
@@ -172,14 +182,23 @@ const getMerchantById = async (req, res) => {
       .eq('id', id)
       .single();
 
-    if (error) throw error;
-
-    if (!data) {
-      return res.status(404).json({ error: 'Comerciante no encontrado' });
+    if (error) {
+      console.error(`❌ Error buscando comerciante ${id}:`, error);
+      throw error;
     }
 
+    if (!data) {
+      console.log(`⚠️  Comerciante ${id} no encontrado`);
+      return res.status(404).json({
+        error: 'Comerciante no encontrado',
+        message: `No se encontró un comerciante con el ID: ${id}`
+      });
+    }
+
+    console.log(`✅ Comerciante ${id} encontrado: ${data.name}`);
     res.json(data);
   } catch (error) {
+    console.error('❌ Error en getMerchantById:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -188,6 +207,22 @@ const getMerchantById = async (req, res) => {
 const updateMerchant = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Verificar que el comerciante existe antes de intentar actualizar
+    const { data: existingMerchant, error: checkError } = await supabase
+      .from('merchants')
+      .select('id')
+      .eq('id', id)
+      .single();
+
+    if (checkError || !existingMerchant) {
+      console.error(`❌ Comerciante ${id} no encontrado:`, checkError);
+      return res.status(404).json({
+        error: 'Comerciante no encontrado',
+        message: `No se encontró un comerciante con el ID: ${id}`,
+        id: id
+      });
+    }
     const {
       name, business, address, address_references, delegation,
       latitude, longitude, organization_id,
