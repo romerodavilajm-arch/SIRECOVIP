@@ -7,6 +7,7 @@ import { Button, Input, Card } from '../../components/ui';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +17,12 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!acceptedPrivacy) {
+      setError('Debes aceptar el Aviso de Privacidad para continuar');
+      return;
+    }
+
     setLoading(true);
 
     const result = await login(email, password);
@@ -42,19 +49,24 @@ const Login = () => {
             SIRECOVIP
           </h1>
           <p className="mt-2 text-base text-gray-600">
-            Sistema de Registro y Control de Viviendas Prioritarias
+            Sistema de Registro de Comerciantes
+          </p>
+          <p className="mt-1 text-sm text-gray-500">
+            Dirección de Inspección en Comercio y Espectáculos
           </p>
         </div>
 
         {/* Privacy Notice */}
-        <div className="bg-amber-50 border-l-4 border-amber-500 rounded-md p-4">
+        <div className="bg-blue-50 border-l-4 border-blue-500 rounded-md p-4">
           <div className="flex items-start">
-            <Info className="h-5 w-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" />
+            <Info className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
             <div>
-              <h3 className="text-sm font-medium text-amber-900">Aviso de Privacidad</h3>
-              <p className="text-xs text-amber-800 mt-1">
-                Este sistema es de uso exclusivo para personal autorizado.
-                Toda actividad es registrada y monitoreada.
+              <h3 className="text-sm font-medium text-blue-900">Información Importante</h3>
+              <p className="text-xs text-blue-800 mt-1">
+                Sistema de uso exclusivo para personal autorizado de la Dirección de Inspección en Comercio y Espectáculos del Municipio de Querétaro.
+              </p>
+              <p className="text-xs text-blue-700 mt-2">
+                Toda actividad es registrada y monitoreada conforme a la normativa vigente.
               </p>
             </div>
           </div>
@@ -80,7 +92,7 @@ const Login = () => {
                 label="Correo electrónico"
                 icon={Mail}
                 iconPosition="left"
-                placeholder="usuario@sirecovip.gob.pe"
+                placeholder="correo@queretaro.gob.mx"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
@@ -101,11 +113,40 @@ const Login = () => {
                 required
               />
 
+              {/* Checkbox de Aviso de Privacidad */}
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="privacy"
+                    name="privacy"
+                    type="checkbox"
+                    checked={acceptedPrivacy}
+                    onChange={(e) => setAcceptedPrivacy(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                  />
+                </div>
+                <div className="ml-3">
+                  <label htmlFor="privacy" className="text-sm text-gray-700 cursor-pointer">
+                    Acepto el{' '}
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        alert('Aviso de Privacidad:\n\nLos datos personales recabados a través de este sistema serán utilizados exclusivamente para el registro y control de comerciantes por parte de la Dirección de Inspección en Comercio y Espectáculos del Municipio de Querétaro.\n\nSistema desarrollado por KODOMA para uso interno de la dependencia.\n\nLos datos serán tratados de manera confidencial conforme a la Ley de Protección de Datos Personales en Posesión de Sujetos Obligados del Estado de Querétaro.');
+                      }}
+                      className="font-medium text-blue-600 hover:text-blue-500 underline"
+                    >
+                      Aviso de Privacidad
+                    </a>
+                  </label>
+                </div>
+              </div>
+
               <Button
                 type="submit"
                 variant="default"
                 size="lg"
-                disabled={loading}
+                disabled={loading || !acceptedPrivacy}
                 className="w-full"
               >
                 {loading ? (
@@ -122,13 +163,22 @@ const Login = () => {
         </Card>
 
         {/* Footer */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-gray-700 font-medium">
+            Municipio de Querétaro
+          </p>
           <p className="text-xs text-gray-600">
-            Gobierno del Perú - Ministerio de Vivienda, Construcción y Saneamiento
+            Dirección de Inspección en Comercio y Espectáculos
           </p>
-          <p className="text-xs text-gray-500 mt-1">
-            v1.0.0 - Sistema Seguro
-          </p>
+          <div className="pt-2 border-t border-gray-200">
+            <p className="text-xs text-gray-500">
+              Sistema desarrollado por{' '}
+              <span className="font-semibold text-blue-600">KODOMA</span>
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              v1.0.0 - Sistema Seguro y Cifrado
+            </p>
+          </div>
         </div>
       </div>
     </div>
