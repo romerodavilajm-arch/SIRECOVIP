@@ -19,13 +19,11 @@ L.Icon.Default.mergeOptions({
 const getMarkerColor = (status) => {
   switch (status) {
     case 'sin-foco':
-      return '#10B981'; // Verde (green-500) - coincide con la leyenda
+      return '#10B981'; // Verde (green-500)
     case 'en-observacion':
+      return '#F59E0B'; // Ámbar (amber-500)
     case 'prioritario':
-      return '#F59E0B'; // Amarillo (amber-500) - coincide con la leyenda
-    case 'foco-detectado':
-    case 'rechazado':
-      return '#EF4444'; // Rojo (red-500) - coincide con la leyenda
+      return '#EF4444'; // Rojo (red-500)
     default:
       return '#3B82F6'; // Azul por defecto
   }
@@ -86,14 +84,12 @@ const MapView = () => {
     fetchData();
   }, []);
 
-  // Opciones de filtro
+  // Opciones de filtro (solo estatus válidos según el schema de BD)
   const statusOptions = [
     { value: 'all', label: 'Todos los estados' },
     { value: 'sin-foco', label: 'Sin Foco' },
     { value: 'en-observacion', label: 'En Observación' },
     { value: 'prioritario', label: 'Prioritario' },
-    { value: 'foco-detectado', label: 'Foco Detectado' },
-    { value: 'rechazado', label: 'Rechazado' },
   ];
 
   const organizationOptions = useMemo(() => {
@@ -141,8 +137,6 @@ const MapView = () => {
       'sin-foco': 0,
       'en-observacion': 0,
       'prioritario': 0,
-      'foco-detectado': 0,
-      'rechazado': 0,
     };
 
     filteredMerchants.forEach((merchant) => {
@@ -160,13 +154,13 @@ const MapView = () => {
       },
       {
         label: 'En Observación',
-        value: stats['en-observacion'] + stats['prioritario'],
+        value: stats['en-observacion'],
         color: 'text-amber-600',
         icon: Eye,
       },
       {
-        label: 'Focos',
-        value: stats['foco-detectado'] + stats['rechazado'],
+        label: 'Prioritarios',
+        value: stats['prioritario'],
         color: 'text-red-600',
         icon: AlertTriangle,
       },
@@ -187,10 +181,6 @@ const MapView = () => {
         return 'En Observación';
       case 'prioritario':
         return 'Prioritario';
-      case 'foco-detectado':
-        return 'Foco Detectado';
-      case 'rechazado':
-        return 'Rechazado';
       default:
         return status;
     }
@@ -373,7 +363,7 @@ const MapView = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                  <span className="text-body-sm text-gray-700">Foco Detectado</span>
+                  <span className="text-body-sm text-gray-700">Prioritario</span>
                 </div>
                 <div className="pt-2 border-t border-gray-200 mt-2">
                   <p className="text-xs text-gray-500">

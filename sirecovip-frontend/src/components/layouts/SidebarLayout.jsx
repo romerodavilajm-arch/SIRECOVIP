@@ -31,14 +31,14 @@ const SidebarLayout = ({ children }) => {
       { icon: LayoutDashboard, label: 'Dashboard', path: '/app/dashboard' },
       { icon: Map, label: 'Mapa', path: '/app/map' },
       { icon: Store, label: 'Comerciantes', path: '/app/merchants' },
-      { icon: FileText, label: 'Reportes', path: '/app/reportes' },
+      { icon: FileText, label: 'Reportes', path: '/app/reports' },
     ],
     coordinator: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/app/dashboard' },
       { icon: Map, label: 'Mapa General', path: '/app/map' },
       { icon: Users, label: 'Inspectores', path: '/app/inspectores' },
       { icon: Store, label: 'Comerciantes', path: '/app/merchants' },
-      { icon: FileText, label: 'Reportes', path: '/app/reportes' },
+      { icon: FileText, label: 'Reportes', path: '/app/reports' },
       { icon: Settings, label: 'Configuración', path: '/app/configuracion' },
     ],
   };

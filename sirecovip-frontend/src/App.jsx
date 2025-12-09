@@ -4,6 +4,7 @@ import ProtectedLayout from './layouts/ProtectedLayout';
 import Login from './pages/auth/Login';
 import MapView from './pages/inspector/MapView';
 import Dashboard from './pages/coordinator/Dashboard';
+import Reports from './pages/coordinator/Reports';
 import MerchantDetail from './pages/inspector/MerchantDetail';
 import MerchantList from './pages/inspector/MerchantList';
 
@@ -21,6 +22,7 @@ function App() {
             {/* Rutas accesibles para ambos roles */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="map" element={<MapView />} />
+            <Route path="reports" element={<Reports />} />
 
             {/* Rutas de comerciantes */}
             <Route path="merchants" element={<MerchantList />} />

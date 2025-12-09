@@ -207,6 +207,7 @@ const getMerchantById = async (req, res) => {
 const updateMerchant = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(`🔄 Intentando actualizar comerciante: ${id}`);
 
     // Verificar que el comerciante existe antes de intentar actualizar
     const { data: existingMerchant, error: checkError } = await supabase
@@ -215,14 +216,32 @@ const updateMerchant = async (req, res) => {
       .eq('id', id)
       .single();
 
-    if (checkError || !existingMerchant) {
-      console.error(`❌ Comerciante ${id} no encontrado:`, checkError);
+    console.log('🔍 Resultado de verificación:', {
+      existe: !!existingMerchant,
+      error: checkError?.message || 'ninguno',
+      data: existingMerchant
+    });
+
+    if (checkError) {
+      console.error(`❌ Error al verificar comerciante ${id}:`, checkError);
+      return res.status(404).json({
+        error: 'Comerciante no encontrado',
+        message: `No se encontró un comerciante con el ID: ${id}`,
+        details: checkError.message,
+        id: id
+      });
+    }
+
+    if (!existingMerchant) {
+      console.error(`❌ Comerciante ${id} no existe en BD`);
       return res.status(404).json({
         error: 'Comerciante no encontrado',
         message: `No se encontró un comerciante con el ID: ${id}`,
         id: id
       });
     }
+
+    console.log(`✅ Comerciante ${id} existe, procediendo con actualización`);
     const {
       name, business, address, address_references, delegation,
       latitude, longitude, organization_id,
