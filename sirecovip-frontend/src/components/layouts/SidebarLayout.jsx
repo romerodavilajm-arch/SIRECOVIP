@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import {
   LayoutDashboard,
   Map,
@@ -17,13 +18,7 @@ const SidebarLayout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Datos dummy del usuario (reemplazar con contexto real)
-  const user = {
-    name: 'Juan Pérez',
-    email: 'juan.perez@sirecovip.gob.pe',
-    role: 'inspector', // 'inspector' o 'coordinator'
-  };
+  const { user, logout } = useAuth();
 
   // Definir menú según rol
   const menuItems = {
@@ -43,11 +38,10 @@ const SidebarLayout = ({ children }) => {
     ],
   };
 
-  const currentMenu = menuItems[user.role] || menuItems.inspector;
+  const currentMenu = menuItems[user?.role] || menuItems.inspector;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    logout();
     navigate('/login');
   };
 
@@ -96,12 +90,12 @@ const SidebarLayout = ({ children }) => {
       {/* User Info */}
       <div className="p-4 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-            {user.name.charAt(0)}
+          <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm">
+            {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-            <p className="text-xs text-gray-500 truncate capitalize">{user.role}</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || 'Usuario'}</p>
+            <p className="text-xs text-gray-500 truncate">{user?.assigned_zone || 'Sin zona asignada'}</p>
           </div>
         </div>
       </div>

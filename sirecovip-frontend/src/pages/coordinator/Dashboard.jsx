@@ -2,41 +2,54 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import {
   Users, Store, Eye, CheckCircle, AlertTriangle, Clock, TrendingUp,
-  MapPin, Calendar, User, FileText, Mail, Shield, Activity
+  MapPin, User, FileText, Mail, Shield, Activity
 } from 'lucide-react';
 import { Card, Badge } from '../../components/ui';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import merchantService from '../../services/merchantService';
+import userService from '../../services/userService';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const isInspector = user?.role === 'inspector';
-  const isCoordinator = user?.role === 'coordinator';
 
-  // Estado para datos de comerciantes
+  // Estado para datos de comerciantes e inspectores
   const [merchants, setMerchants] = useState([]);
+  const [inspectors, setInspectors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar datos de comerciantes
+  // Cargar datos de comerciantes e inspectores de la misma zona
   useEffect(() => {
-    const fetchMerchants = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await merchantService.getMerchants();
-        setMerchants(data);
+
+        // Cargar comerciantes
+        const merchantsData = await merchantService.getMerchants();
+        setMerchants(merchantsData);
+
+        // Cargar inspectores de la misma zona (solo si el usuario tiene zona asignada)
+        if (user?.assigned_zone) {
+          const inspectorsData = await userService.getUsersByZone(user.assigned_zone);
+          // Filtrar para excluir al usuario actual de la lista
+          const otherInspectors = inspectorsData.filter(inspector => inspector.id !== user.id);
+          setInspectors(otherInspectors);
+        }
+
         setError(null);
       } catch (err) {
-        console.error('Error loading merchants:', err);
+        console.error('Error loading data:', err);
         setError('Error al cargar los datos');
         setMerchants([]);
+        setInspectors([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMerchants();
-  }, []);
+    fetchData();
+  }, [user?.assigned_zone, user?.id]);
 
   // Calcular métricas para Inspector (filtradas por usuario actual)
   const getInspectorMetrics = () => {
@@ -179,19 +192,23 @@ const Dashboard = () => {
   const inspectorProfile = {
     name: user?.name || 'Inspector',
     email: user?.email || 'inspector@sirecovip.gob.pe',
-    role: 'Inspector de Campo',
-    zone: 'Centro', // TODO: Obtener de la base de datos
-    dni: '12345678', // TODO: Obtener de la base de datos
-    startDate: '2024-01-15', // TODO: Obtener de la base de datos
+    role: user?.role === 'inspector' ? 'Inspector de Campo' : 'Coordinador',
+    zone: user?.assigned_zone || 'No asignada',
   };
 
-  // Inspectores activos (solo para coordinador) - TODO: Obtener de la base de datos
-  const activeInspectors = [
-    { id: 1, name: 'Juan Pérez', zone: 'Centro', merchants: 45, status: 'active' },
-    { id: 2, name: 'María García', zone: 'Norte', merchants: 38, status: 'active' },
-    { id: 3, name: 'Carlos López', zone: 'Sur', merchants: 52, status: 'active' },
-    { id: 4, name: 'Ana Torres', zone: 'Este', merchants: 41, status: 'offline' },
-  ];
+  // Inspectores activos de la misma zona (obtenidos de la base de datos)
+  const activeInspectors = inspectors.map(inspector => {
+    // Contar cuántos comerciantes ha registrado cada inspector
+    const merchantCount = merchants.filter(m => m.registered_by === inspector.id).length;
+
+    return {
+      id: inspector.id,
+      name: inspector.name,
+      zone: inspector.assigned_zone,
+      merchants: merchantCount,
+      status: 'active', // Por defecto activo (se puede mejorar con lógica de última actividad)
+    };
+  });
 
   // Seleccionar datos según el rol
   const metrics = isInspector ? getInspectorMetrics() : getCoordinatorMetrics();
@@ -233,17 +250,50 @@ const Dashboard = () => {
   return (
     <SidebarLayout>
       <div className="p-6 space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-4xl font-semibold text-gray-900">
-            {isInspector ? 'Mi Perfil' : 'Dashboard'}
-          </h1>
-          <p className="text-base text-gray-600 mt-2">
-            {isInspector
-              ? 'Información personal y estadísticas de tu trabajo'
-              : 'Resumen general del sistema de monitoreo'
-            }
-          </p>
+        {/* Header con información del usuario */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm text-white flex items-center justify-center font-bold text-2xl border-2 border-white/30">
+              {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+            </div>
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold text-white">
+                ¡Bienvenido, {user?.name || 'Usuario'}!
+              </h1>
+              <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-blue-200" />
+                  <span className="text-blue-100 text-sm font-medium">
+                    {user?.role === 'inspector' ? 'Inspector de Campo' : 'Coordinador'}
+                  </span>
+                </div>
+                {user?.assigned_zone && (
+                  <>
+                    <span className="text-blue-300">•</span>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-blue-200" />
+                      <span className="text-blue-100 text-sm font-medium">
+                        {user.assigned_zone}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-blue-100 text-sm">
+                {isInspector ? 'Mi Panel de Control' : 'Dashboard General'}
+              </p>
+              <p className="text-blue-200 text-xs mt-1">
+                {new Date().toLocaleDateString('es-ES', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Métricas Grid */}
@@ -486,37 +536,47 @@ const Dashboard = () => {
                   </div>
                 </Card.Header>
                 <Card.Content className="p-0">
-                  <div className="divide-y divide-gray-200">
-                    {activeInspectors.map((inspector) => (
-                      <div key={inspector.id} className="p-4 hover:bg-gray-50 transition-colors duration-150">
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-sm">
-                              {inspector.name.split(' ').map(n => n[0]).join('')}
+                  {activeInspectors.length > 0 ? (
+                    <div className="divide-y divide-gray-200">
+                      {activeInspectors.map((inspector) => (
+                        <div key={inspector.id} className="p-4 hover:bg-gray-50 transition-colors duration-150">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-sm">
+                                {inspector.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                              </div>
+                              <div>
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {inspector.name}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {inspector.zone}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-semibold text-gray-900">
-                                {inspector.name}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                Zona {inspector.zone}
-                              </p>
+                            <div className="flex items-center gap-1.5">
+                              <div className={`w-2 h-2 rounded-full ${
+                                inspector.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
+                              }`} />
                             </div>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <div className={`w-2 h-2 rounded-full ${
-                              inspector.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
-                            }`} />
+                          <div className="ml-13">
+                            <p className="text-xs text-gray-600">
+                              {inspector.merchants} comerciantes registrados
+                            </p>
                           </div>
                         </div>
-                        <div className="ml-13">
-                          <p className="text-xs text-gray-600">
-                            {inspector.merchants} comerciantes asignados
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center">
+                      <Users className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-sm text-gray-500">No hay otros inspectores en tu zona</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Eres el único inspector asignado a {user?.assigned_zone}
+                      </p>
+                    </div>
+                  )}
                 </Card.Content>
               </Card>
             </div>

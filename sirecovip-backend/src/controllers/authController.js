@@ -15,10 +15,10 @@ const login = async (req, res) => {
 
     if (error) return res.status(401).json({ error: error.message });
 
-    // Consultar la tabla public.users para obtener el rol y nombre del usuario
+    // Consultar la tabla public.users para obtener el rol, nombre y zona del usuario
     const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('role, name')
+        .select('role, name, assigned_zone')
         .eq('id', data.user.id)
         .single();
 
@@ -42,7 +42,8 @@ const login = async (req, res) => {
             id: data.user.id,
             email: data.user.email,
             role: userData.role,
-            name: userData.name
+            name: userData.name,
+            assigned_zone: userData.assigned_zone
         }
     });
 };

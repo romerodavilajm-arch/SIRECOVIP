@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 // Importar rutas
 const merchantRoutes = require('./routes/merchantRoutes');
 const organizationRoutes = require('./routes/organizationRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 // Rutas de la API
 app.use('/api/merchants', merchantRoutes);
 app.use('/api/organizations', organizationRoutes);
+app.use('/api/users', userRoutes);
 
 app.listen(port, () => {
     console.log(`\n🚀 Servidor corriendo en http://localhost:${port}`);
