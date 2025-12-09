@@ -5,6 +5,8 @@ import Login from './pages/auth/Login';
 import MapView from './pages/inspector/MapView';
 import Dashboard from './pages/coordinator/Dashboard';
 import Reports from './pages/coordinator/Reports';
+import Inspectores from './pages/coordinator/Inspectores';
+import Configuracion from './pages/coordinator/Configuracion';
 import MerchantDetail from './pages/inspector/MerchantDetail';
 import MerchantList from './pages/inspector/MerchantList';
 
@@ -23,6 +25,10 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="map" element={<MapView />} />
             <Route path="reports" element={<Reports />} />
+
+            {/* Rutas de coordinador */}
+            <Route path="inspectores" element={<Inspectores />} />
+            <Route path="configuracion" element={<Configuracion />} />
 
             {/* Rutas de comerciantes */}
             <Route path="merchants" element={<MerchantList />} />
